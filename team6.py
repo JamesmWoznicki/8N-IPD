@@ -8,8 +8,8 @@ import random
 ####
 
 team_name = 'Poogie Master' # Only 10 chars displayed.
-strategy_name = 'The name the team gives to this strategy'
-strategy_description = 'How does this strategy decide?'
+strategy_name = 'Random, based on opponents recent history'
+strategy_description = 'Random, but influenced by their choice'
     
 def move(my_history, their_history, my_score, their_score):
     ''' Arguments accepted: my_history, their_history are strings.
@@ -19,7 +19,7 @@ def move(my_history, their_history, my_score, their_score):
     Returns 'c' or 'b'. 
     '''
     cs = 0
-    bs = 0
+    bs = 1
     if len(their_history) > 11:
         recenHist = their_history[-11:]
     # my_history: a string with one letter (c or b) per round that has been played with this opponent.
@@ -31,20 +31,22 @@ def move(my_history, their_history, my_score, their_score):
             cs += 1
         else:
             bs += 1
-    theirChoice = (cs / (cs + bs)) * 100
-    yourChoice = random.randint(1,100)
-    if my_score <= their_score:
-        theirChoice -= 20
-    if my_score or their_score >= 0:
-        theirChoice += 75
+    if cs or bs >= 0:
+        theirChoice = (cs / (cs + bs)) * 100
+        yourChoice = random.randint(1,100)
+        if my_score <= their_score:
+            theirChoice -= 20
+        if my_score or their_score >= 0:
+            theirChoice += 75
     # Analyze my_history and their_history and/or my_score and their_score.
     # Decide whether to return 'c' or 'b'.
     if my_history == '':
         return 'c'
-    elif yourChoice >= theirChoice:
-        return 'b'
     else:
-        return 'c'
+        if yourChoice >= theirChoice:
+            return 'b'
+        else:
+            return 'c'
 
 def test_move(my_history, their_history, my_score, their_score, result):
     '''calls move(my_history, their_history, my_score, their_score)
